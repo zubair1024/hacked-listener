@@ -1,17 +1,30 @@
 "use strict";
 
+
+// add this to the VERY top of the first file loaded in your app
+const opbeat = require('opbeat').start({
+    appId: 'b417958111',
+    organizationId: '1d480c7c4dc844eda9226c048d9084f1',
+    secretToken: '640fa846f9de8926b06f80d8dd4a3df4acc825eb'
+})
+
 /**
  * Requiring necessary modules
  */
-var net = require('net'),
-    fs = require('fs');
+const net = require('net');
+const fs = require('fs');
 
 /**
  * Host IP and Port
  */
-let PORT = 1101;
-let threshold = 29;
+const PORT = 1101;
+const threshold = 29;
+
 let above = false;
+
+
+
+
 
 
 /**
@@ -70,7 +83,7 @@ net.createServer(function (sock) {
                         //do nothing
                     }
                 }
-            }else{
+            } else {
                 console.log(`Incomplete message: ${incomingMsg}`);
             }
         }
