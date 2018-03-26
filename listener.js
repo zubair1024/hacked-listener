@@ -38,34 +38,38 @@ net.createServer(function (sock) {
         } else if (incomingMsg.indexOf("ping") > -1) {
             console.log("not interesting....");
         } else {
-            let chunks = incomingMsg.split('*');
-            for (let i = 0; i < chunks.length; i++) {
-                let message = chunks[i];
-                message = message.replace("\r\n", "");
-                if (message !== '') {
-                    if (message.indexOf(',') > -1) {
-                        let splitData = message.split(',');
-                        let date = splitData[0];
-                        let time = splitData[1];
-                        let value = splitData[2];
-                        console.log(`DATA: ${date}, ${time}, ${value}`);
-                        value = value.replace('\r\n', '');
-                        let convertedValue = parseFloat(value);
-                        if (!(convertedValue == 85)) {
-                            if (convertedValue >= threshold) {
-                                above = true;
-                                console.log(`Command sent: ${value} higher than threshold at ${date} ${time}`);
-                                sock.write('$PFAL,Sys.Trigger0=high\r\n');
-                            } else if ((convertedValue < threshold) && above) {
-                                above = false;
-                                console.log(`Command sent:  ${value} lower than threshold at ${date} ${time}`);
-                                sock.write('$PFAL,Sys.Trigger1=high\r\n');
+            if (incomingMsg.indexOf('*') > -1) {
+                let chunks = incomingMsg.split('*');
+                for (let i = 0; i < chunks.length; i++) {
+                    let message = chunks[i];
+                    message = message.replace("\r\n", "");
+                    if (message !== '') {
+                        if (message.indexOf(',') > -1) {
+                            let splitData = message.split(',');
+                            let date = splitData[0];
+                            let time = splitData[1];
+                            let value = splitData[2];
+                            console.log(`DATA: ${date}, ${time}, ${value}`);
+                            value = value.replace('\r\n', '');
+                            let convertedValue = parseFloat(value);
+                            if (!(convertedValue == 85)) {
+                                if (convertedValue >= threshold) {
+                                    above = true;
+                                    console.log(`Command sent: ${value} higher than threshold at ${date} ${time}`);
+                                    sock.write('$PFAL,Sys.Trigger0=high\r\n');
+                                } else if ((convertedValue < threshold) && above) {
+                                    above = false;
+                                    console.log(`Command sent:  ${value} lower than threshold at ${date} ${time}`);
+                                    sock.write('$PFAL,Sys.Trigger1=high\r\n');
+                                }
                             }
                         }
+                    } else {
+                        //do nothing
                     }
-                } else {
-                    //do nothing
                 }
+            }else{
+                console.log(`Incomplete message: ${incomingMsg}`);
             }
         }
         /**
