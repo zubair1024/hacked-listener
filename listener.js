@@ -56,5 +56,5 @@ net.createServer(function (sock) {
 }).listen(PORT);
 
 
-console.log('Server listening on ' + HOST + ':' + PORT + ' for Falcom');
+console.log('Server listening on ' + PORT);
 
