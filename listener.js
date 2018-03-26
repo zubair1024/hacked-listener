@@ -34,9 +34,11 @@ net.createServer(function (sock) {
         console.log(`${now}\t${sock.remoteAddress}: ${data}\n`);
 
         if (incomingMsg.indexOf("ServerLogin") > -1) {
-            console.log("server login....");
+            console.log("server login");
         } else if (incomingMsg.indexOf("ping") > -1) {
-            console.log("not interesting....");
+            console.log("not interesting");
+        } else if (incomingMsg.indexOf("$<SYS.Trigger") > -1) {
+            console.log("command response");
         } else {
             if (incomingMsg.indexOf('*') > -1) {
                 let chunks = incomingMsg.split('*');
